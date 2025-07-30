@@ -1,0 +1,114 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    ports:
+      - "8096:8096"
+    volumes:
+      - /home/user/arr-stack/jellyfin/config:/config
+      - /home/user/arr-stack/jellyfin/cache:/cache
+    # - <host media volume>:<container>
+    environment:
+      - PUID=0
+      - PGID=0
+    group_add:
+      - '995'
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128 # Enable hardware acceleration (optional)
+
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    ports:
+      - "8989:8989"
+    volumes:
+      - /home/user/arr-stack/sonarr/config:/config
+    # - <host media volume>:<container>
+    # - <host downloads volume>:<container> #dir needs to match downlaod client's dir
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Etc/GMT+3
+
+  radarr:
+    image: linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    ports:
+      - "7878:7878"
+    volumes:
+      - /home/user/arr-stack/radarr/config:/config
+    # - <host media volume>:<container>
+    # - <host downloads volume>:<container> #dir needs to match downlaod client's dir
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Etc/GMT+3
+
+  prowlarr:
+    image: linuxserver/prowlarr:latest
+    container_name: prowlarr
+    restart: unless-stopped
+    ports:
+      - "9696:9696"
+    volumes:
+      - /home/user/arr-stack/prowlarr/config:/config
+    # - <host downloads volume>:<container> #dir needs to match downlaod client's dir
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Etc/GMT+3
+
+  qbittorrent:
+    image: linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: unless-stopped
+    ports:
+      - "8822:8822"    # Web UI
+      - "6881:6881"    # BitTorrent TCP
+      - "6881:6881/udp" # BitTorrent UDP
+    volumes:
+      - /home/user/arr-stack/qbittorrent/config:/config
+    # - <host downloads volume>:<container> #dir needs to match downlaod arr's dir
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Etc/GMT+3
+      - WEBUI_PORT=8822
+
+  flaresolverr:
+    image: flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    restart: unless-stopped
+    ports:
+      - "8191:8191"
+    environment:
+      - LOG_LEVEL=info
+      - TZ=Etc/GMT+3
+
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host
+    ports:
+      - "32400:32400"
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Etc/GMT+3
+      - VERSION=docker
+    #  - PLEX_CLAIM= #<insert claim token>
+    volumes:
+      - /home/user/arr-stack/plex/config:/config
+    # - <host media volume>:<container>
+    restart: unless-stopped
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128  # Enable hardware acceleration (optional)
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token #<insert token>
