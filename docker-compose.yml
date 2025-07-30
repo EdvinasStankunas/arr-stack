@@ -6,8 +6,8 @@ services:
     ports:
       - "8096:8096"
     volumes:
-      - /home/user/arr-stack/jellyfin/config:/config
-      - /home/user/arr-stack/jellyfin/cache:/cache
+      - ./jellyfin/config:/config
+      - ./jellyfin/cache:/cache
     # - <host media volume>:<container>
     environment:
       - PUID=0
@@ -24,7 +24,7 @@ services:
     ports:
       - "8989:8989"
     volumes:
-      - /home/user/arr-stack/sonarr/config:/config
+      - ./sonarr/config:/config
     # - <host media volume>:<container>
     # - <host downloads volume>:<container> #dir needs to match downlaod client's dir
     environment:
@@ -39,7 +39,7 @@ services:
     ports:
       - "7878:7878"
     volumes:
-      - /home/user/arr-stack/radarr/config:/config
+      - ./radarr/config:/config
     # - <host media volume>:<container>
     # - <host downloads volume>:<container> #dir needs to match downlaod client's dir
     environment:
@@ -54,7 +54,7 @@ services:
     ports:
       - "9696:9696"
     volumes:
-      - /home/user/arr-stack/prowlarr/config:/config
+      - ./prowlarr/config:/config
     # - <host downloads volume>:<container> #dir needs to match downlaod client's dir
     environment:
       - PUID=0
@@ -70,7 +70,7 @@ services:
       - "6881:6881"    # BitTorrent TCP
       - "6881:6881/udp" # BitTorrent UDP
     volumes:
-      - /home/user/arr-stack/qbittorrent/config:/config
+      - ./qbittorrent/config:/config
     # - <host downloads volume>:<container> #dir needs to match downlaod arr's dir
     environment:
       - PUID=0
@@ -101,7 +101,7 @@ services:
       - VERSION=docker
     #  - PLEX_CLAIM= #<insert claim token>
     volumes:
-      - /home/user/arr-stack/plex/config:/config
+      - ./plex/config:/config
     # - <host media volume>:<container>
     restart: unless-stopped
     devices:
